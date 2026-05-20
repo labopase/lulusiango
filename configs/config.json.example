@@ -1,6 +1,6 @@
 {
     "app": {
-        "name": "tickboard",
+        "name": "lulusiango",
         "version": "v1",
         "environment": "development",
         "debug": true

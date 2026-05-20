@@ -24,10 +24,26 @@ s3-output:
 s3-destroy:
 	cd ./infrastructures/terraform/s3 && terraform destroy
 
-# tools instalation
-.PHONY: install
+# tools & configuration
+.PHONY: install configs
 install:
 	@./scripts/tools.sh
+configs:
+	@if [ ! -f configs/config.json ]; then \
+		cp configs/config.json.example configs/config.json && echo "Created configs/config.json"; \
+	else \
+		echo "configs/config.json already exists, skipping..."; \
+	fi
+	@if [ ! -f configs/flags.json ]; then \
+		cp configs/flags.json.example configs/flags.json && echo "Created configs/flags.json"; \
+	else \
+		echo "configs/flags.json already exists, skipping..."; \
+	fi
+	@if [ ! -f infrastructures/docker/.env ]; then \
+		cp infrastructures/docker/.env.example infrastructures/docker/.env && echo "Created infrastructures/docker/.env"; \
+	else \
+		echo "infrastructures/docker/.env already exists, skipping..."; \
+	fi
 
 # Go
 .PHONY: run-api

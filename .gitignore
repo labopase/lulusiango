@@ -34,6 +34,10 @@ flags.json
 .idea/
 .vscode/
 
+# OS
+.DS_Store
+Thumbs.db
+
 # terraform
 .terraform/
 *.tfstate

@@ -6,9 +6,9 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/halimdotnet/lulusiango/internals/shared/api/rest/middlewares"
 	"github.com/halimdotnet/lulusiango/internals/shared/observability/logger"
 	"github.com/labstack/echo/v5"
-	"github.com/labstack/echo/v5/middleware"
 )
 
 type engine struct {
@@ -25,8 +25,6 @@ func NewEngine(option *HttpOption, log logger.Logger) (Engine, error) {
 	option.applyDefaults()
 
 	e := echo.New()
-	e.Use(middleware.Recover())
-	e.Use(middleware.RequestLogger())
 
 	return &engine{
 		echo:   e,
@@ -36,6 +34,8 @@ func NewEngine(option *HttpOption, log logger.Logger) (Engine, error) {
 }
 
 func (e *engine) Start(ctx context.Context) error {
+	e.setupDefaultMiddleware()
+
 	ln, err := net.Listen("tcp", e.option.Addr())
 	if err != nil {
 		return fmt.Errorf("httpx: failed to listen on %s: %w", e.option.Addr(), err)
@@ -65,4 +65,15 @@ func (e *engine) Start(ctx context.Context) error {
 
 func (e *engine) Instance() *echo.Echo {
 	return e.echo
+}
+
+func (e *engine) setupDefaultMiddleware() {
+	e.echo.Use(middlewares.Logger(e.log, middlewares.LoggerConfig{
+		ServiceName: e.option.AppName,
+	}))
+	e.echo.Use(middlewares.Recover(middlewares.RecoverConfig{
+		DisableStackAll:   false,
+		DisablePrintStack: false,
+		StackSize:         6 << 10, // 6KB
+	}))
 }

@@ -15,8 +15,10 @@ const (
 )
 
 type HttpOption struct {
-	Host string `mapstructure:"host"`
-	Port int    `mapstructure:"port"`
+	Host    string `mapstructure:"host"`
+	Port    int    `mapstructure:"port"`
+	AppName string `mapstructure:"app_name"`
+	AppPath string `mapstructure:"app_path"`
 
 	WriteTimeout    time.Duration `mapstructure:"write_timeout"`
 	ReadTimeout     time.Duration `mapstructure:"read_timeout"`
