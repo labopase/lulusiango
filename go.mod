@@ -1,8 +1,8 @@
 module github.com/halimdotnet/lulusiango
 
 go 1.25.0
-
 require (
+	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.9.2
 	github.com/labstack/echo/v5 v5.1.1
 	github.com/redis/go-redis/v9 v9.19.0
