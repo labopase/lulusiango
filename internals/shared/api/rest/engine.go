@@ -26,22 +26,23 @@ func NewEngine(option *HttpOption, log logger.Logger) (Engine, error) {
 
 	e := echo.New()
 
-	return &engine{
+	eng := &engine{
 		echo:   e,
 		log:    log,
 		option: option,
-	}, nil
+	}
+
+	eng.setupDefaultMiddleware()
+
+	return eng, nil
 }
 
 func (e *engine) Start(ctx context.Context) error {
-	e.setupDefaultMiddleware()
 
 	ln, err := net.Listen("tcp", e.option.Addr())
 	if err != nil {
 		return fmt.Errorf("httpx: failed to listen on %s: %w", e.option.Addr(), err)
 	}
-
-	e.log.Infof("starting http server on %s", e.option.Addr())
 
 	sc := echo.StartConfig{
 		Address:         e.option.Addr(),

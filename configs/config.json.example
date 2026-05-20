@@ -44,31 +44,5 @@
         "redis": true,
         "grpc": false,
         "kafka": false
-    },
-    "mongodb": {
-        "host": "localhost",
-        "port": 27017,
-        "database": "tickboard_db",
-        "root_username": "mongodb_tickboard",
-        "root_password": "tickboard_123"
-    },
-    "elasticsearch": {
-        "host": "localhost",
-        "port": 9200,
-        "password": "elastic_123"
-    },
-    "kafka": {
-        "host": "localhost",
-        "port": 9092
-    },
-    "kafdrop": {
-        "port": 9001
-    },
-    "kafka_ui": {
-        "port": 9002
-    },
-    "grafana": {
-        "admin_user": "admin",
-        "admin_password": "admin123"
     }
 }

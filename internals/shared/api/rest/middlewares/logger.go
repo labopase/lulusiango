@@ -28,16 +28,12 @@ func Logger(log logger.Logger, config LoggerConfig) echo.MiddlewareFunc {
 				return next(c)
 			}
 
-			err := next(c)
-
-			if err != nil {
-				panic(err)
-			}
-
 			start := now()
 			req := c.Request()
-			res := c.Response()
 
+			err := next(c)
+
+			res := c.Response()
 			resp, status := echo.ResolveResponseStatus(res, err)
 
 			level := constants.LogInfo
@@ -129,7 +125,7 @@ func Logger(log logger.Logger, config LoggerConfig) echo.MiddlewareFunc {
 
 			log.Infow("REQUEST", field...)
 
-			return nil
+			return err
 		}
 	}
 }
