@@ -3,7 +3,7 @@
         "name": "lulusiango",
         "version": "1.0.0",
         "environment": "development",
-        "debug": false,
+        "debug": false
     },
     "logger": {
         "level": "info",
