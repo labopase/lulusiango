@@ -2,27 +2,35 @@ package repository
 
 import (
 	"context"
+	"errors"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 
 	"github.com/halimdotnet/lulusiango/internals/apps/orchestrator/users/user/models"
 	"github.com/halimdotnet/lulusiango/internals/shared/store/pgsql"
 )
 
-type postgreUserRepository struct {
-	db pgsql.Client
-}
+var ErrUserNotFound = errors.New("user not found")
 
-type PostgreUserRepository interface {
+type UserRepositoryReader interface {
 	GetUserByID(ctx context.Context, id uuid.UUID) (*models.Users, error)
 	GetUserByEmail(ctx context.Context, email string) (*models.Users, error)
+}
+
+type UserRepositoryWriter interface {
 	CreateUser(ctx context.Context, user *models.Users) (*models.Users, error)
 	UpdateUser(ctx context.Context, user *models.Users) (*models.Users, error)
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 }
 
-func NewPostgreRepository(db pgsql.Client) *postgreUserRepository {
-	return &postgreUserRepository{db: db}
+type postgreUserRepository struct {
+	db pgsql.Client
+}
+
+func NewPostgreRepository(db pgsql.Client) (UserRepositoryReader, UserRepositoryWriter) {
+	repo := &postgreUserRepository{db: db}
+	return repo, repo
 }
 
 func (r *postgreUserRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*models.Users, error) {
@@ -42,6 +50,9 @@ func (r *postgreUserRepository) GetUserByID(ctx context.Context, id uuid.UUID) (
 			&user.DeletedBy,
 		)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
 		return nil, err
 	}
 	return user, nil
@@ -64,6 +75,9 @@ func (r *postgreUserRepository) GetUserByEmail(ctx context.Context, email string
 			&user.DeletedBy,
 		)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
 		return nil, err
 	}
 	return user, nil

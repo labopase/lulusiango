@@ -32,7 +32,7 @@ func NewEngine(option *HttpOption, log logger.Logger) (Engine, error) {
 		option: option,
 	}
 
-	eng.setupDefaultMiddleware()
+	//eng.setupDefaultMiddleware()
 
 	return eng, nil
 }

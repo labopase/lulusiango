@@ -1,6 +1,7 @@
 package orchestrator
 
 import (
+	"github.com/halimdotnet/lulusiango/internals/apps/orchestrator/users"
 	"github.com/halimdotnet/lulusiango/internals/shared/api/rest"
 	"github.com/halimdotnet/lulusiango/internals/shared/config"
 	"github.com/halimdotnet/lulusiango/internals/shared/fxapp"
@@ -23,6 +24,9 @@ func NewApp() fxapp.Application {
 			rds.Module,
 			healthz.Module,
 			rest.Module,
+		).
+		WithOptions(
+			users.Module,
 		).
 		Build()
 }
