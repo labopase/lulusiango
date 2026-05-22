@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	dto "github.com/halimdotnet/lulusiango/internals/apps/orchestrator/users/user/dtos/v1"
 	"github.com/halimdotnet/lulusiango/internals/shared/api/rest"
 	"github.com/halimdotnet/lulusiango/internals/shared/utilities/validator"
 	"github.com/labstack/echo/v5"
@@ -26,7 +27,7 @@ func (e *CreateUserEndpoints) Register(engine rest.Engine) {
 }
 
 func (e *CreateUserEndpoints) CreateUserHandler(c *echo.Context) error {
-	req := &CreateUserDtoRequest{}
+	req := &dto.CreateUserDtoRequest{}
 	if err := c.Bind(req); err != nil {
 		return c.JSON(http.StatusBadRequest, rest.Response{
 			Error:   true,

@@ -3,6 +3,7 @@ package createuser
 import (
 	"context"
 
+	dto "github.com/halimdotnet/lulusiango/internals/apps/orchestrator/users/user/dtos/v1"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/halimdotnet/lulusiango/internals/apps/orchestrator/users/user/models"
@@ -14,14 +15,14 @@ type createUser struct {
 }
 
 type CreateUser interface {
-	Execute(ctx context.Context, req *CreateUserDtoRequest) (*CreateUserDTOResponse, error)
+	Execute(ctx context.Context, req *dto.CreateUserDtoRequest) (*dto.CreateUserDTOResponse, error)
 }
 
 func NewCreateUser(userRepo repository.UserRepositoryWriter) CreateUser {
 	return &createUser{userRepo: userRepo}
 }
 
-func (c *createUser) Execute(ctx context.Context, req *CreateUserDtoRequest) (*CreateUserDTOResponse, error) {
+func (c *createUser) Execute(ctx context.Context, req *dto.CreateUserDtoRequest) (*dto.CreateUserDTOResponse, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
@@ -31,7 +32,7 @@ func (c *createUser) Execute(ctx context.Context, req *CreateUserDtoRequest) (*C
 		Email:        req.Email,
 		PasswordHash: string(hashedPassword),
 		Fullname:     req.Fullname,
-		Status:       req.Status,
+		Status:       models.UserStatus(req.Status),
 		CreatedBy:    req.CreatedBy,
 		UpdatedBy:    req.CreatedBy,
 	}
@@ -41,7 +42,7 @@ func (c *createUser) Execute(ctx context.Context, req *CreateUserDtoRequest) (*C
 		return nil, err
 	}
 
-	return &CreateUserDTOResponse{
+	return &dto.CreateUserDTOResponse{
 		ID: result.ID.String(),
 	}, nil
 }
