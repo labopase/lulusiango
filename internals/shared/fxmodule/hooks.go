@@ -3,7 +3,7 @@ package fxmodule
 import (
 	"context"
 
-	"github.com/halimdotnet/lulusiango/internals/shared/httpx"
+	"github.com/halimdotnet/lulusiango/pkg/httpx"
 	"github.com/halimdotnet/lulusiango/pkg/logger"
 	"github.com/halimdotnet/lulusiango/pkg/pgsql"
 	"github.com/halimdotnet/lulusiango/pkg/redis"

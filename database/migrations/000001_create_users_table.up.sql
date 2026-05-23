@@ -1,3 +1,5 @@
+CREATE TYPE user_status AS ENUM ('pending', 'active', 'suspended', 'inactive');
+
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) UNIQUE NOT NULL,

@@ -40,9 +40,9 @@ configs:
 		echo "configs/flags.json already exists, skipping..."; \
 	fi
 	@if [ ! -f infrastructures/docker/.env ]; then \
-		cp infrastructures/docker/.env.example infrastructures/docker/.env && echo "Created infrastructures/docker/.env"; \
+		cp infrastructures/docker-compose/.env.example infrastructures/docker-compose/.env && echo "Created infrastructures/docker/.env"; \
 	else \
-		echo "infrastructures/docker/.env already exists, skipping..."; \
+		echo "infrastructures/docker-compose/.env already exists, skipping..."; \
 	fi
 
 # Migrate
@@ -64,3 +64,17 @@ migrate-force:
 
 migrate-version:
 	@./scripts/migration.sh version
+
+# SQLC
+.PHONY: sqlc-gen sqlc-clean copy-sqlc
+sqlc-gen:
+	@echo "Generating SQLC code..."
+	@sqlc generate
+
+sqlc-clean:
+	@echo "Cleaning generated SQLC code..."
+	@rm -f database/sqlc/models.go database/sqlc/db.go database/sqlc/querier.go database/sqlc/*.sql.go
+
+copy-sqlc:
+	@cp /Users/mymac/.gvm/pkgsets/go1.25.3/global/bin/sqlc ./sqlc
+	@chmod +x ./sqlc
