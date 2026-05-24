@@ -10,14 +10,12 @@ import (
 	"github.com/labstack/echo/v5"
 )
 
-// RegisterController handles HTTP requests for user registration.
 type RegisterController struct {
 	handler RegisterUserCommandHandler
 	logger  logger.Logger
 	val     validator.Validator
 }
 
-// NewRegisterController creates a new RegisterController.
 func NewRegisterController(
 	handler RegisterUserCommandHandler,
 	logger logger.Logger,
@@ -30,12 +28,10 @@ func NewRegisterController(
 	}
 }
 
-// Register registers the HTTP routes associated with this controller.
 func (c *RegisterController) Register(e *echo.Echo) {
 	e.POST("/api/v1/auth/register", c.RegisterUser)
 }
 
-// RegisterUser handles POST /api/v1/auth/register.
 func (c *RegisterController) RegisterUser(ctx *echo.Context) error {
 	var req v1dto.RegisterDtoRequest
 
@@ -47,7 +43,6 @@ func (c *RegisterController) RegisterUser(ctx *echo.Context) error {
 		})
 	}
 
-	// Validate the request payload
 	if err := c.val.Validate(req); err != nil {
 		c.logger.Errorw("validation failed", logger.Error(err))
 		return ctx.JSON(http.StatusBadRequest, httpx.Response{
@@ -56,7 +51,6 @@ func (c *RegisterController) RegisterUser(ctx *echo.Context) error {
 		})
 	}
 
-	// Map DTO to CQRS Command
 	cmd := RegisterUserCommand{
 		Email:           req.Email,
 		FullName:        req.FullName,
@@ -64,7 +58,6 @@ func (c *RegisterController) RegisterUser(ctx *echo.Context) error {
 		ConfirmPassword: req.ConfirmPassword,
 	}
 
-	// Handle command execution
 	_, err := c.handler.Handle(ctx.Request().Context(), cmd)
 	if err != nil {
 		c.logger.Errorw("failed to register user", logger.Error(err))
@@ -74,7 +67,6 @@ func (c *RegisterController) RegisterUser(ctx *echo.Context) error {
 		})
 	}
 
-	// Prepare response - tokens are empty as per constraint
 	resp := v1dto.RegisterDtoResponse{
 		Token:        "",
 		RefreshToken: "",

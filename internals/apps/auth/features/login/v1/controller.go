@@ -10,14 +10,12 @@ import (
 	"github.com/labstack/echo/v5"
 )
 
-// LoginController handles HTTP requests for user authentication.
 type LoginController struct {
 	handler LoginUserQueryHandler
 	logger  logger.Logger
 	val     validator.Validator
 }
 
-// NewLoginController creates a new LoginController.
 func NewLoginController(
 	handler LoginUserQueryHandler,
 	logger logger.Logger,
@@ -30,12 +28,10 @@ func NewLoginController(
 	}
 }
 
-// Register registers the HTTP routes associated with this controller.
 func (c *LoginController) Register(e *echo.Echo) {
 	e.POST("/api/v1/auth/login", c.LoginUser)
 }
 
-// LoginUser handles POST /api/v1/auth/login.
 func (c *LoginController) LoginUser(ctx *echo.Context) error {
 	var req v1dto.LoginDtoRequest
 
@@ -47,7 +43,6 @@ func (c *LoginController) LoginUser(ctx *echo.Context) error {
 		})
 	}
 
-	// Validate the request payload
 	if err := c.val.Validate(req); err != nil {
 		c.logger.Errorw("validation failed", logger.Error(err))
 		return ctx.JSON(http.StatusBadRequest, httpx.Response{
@@ -56,13 +51,11 @@ func (c *LoginController) LoginUser(ctx *echo.Context) error {
 		})
 	}
 
-	// Map DTO to CQRS Query
 	query := LoginUserQuery{
 		Email:    req.Email,
 		Password: req.Password,
 	}
 
-	// Execute the credentials verification query
 	_, err := c.handler.Handle(ctx.Request().Context(), query)
 	if err != nil {
 		c.logger.Errorw("failed to authenticate user", logger.Error(err))
@@ -72,7 +65,6 @@ func (c *LoginController) LoginUser(ctx *echo.Context) error {
 		})
 	}
 
-	// Prepare response - tokens are empty as per constraint
 	resp := v1dto.LoginDtoResponse{
 		Token:        "",
 		RefreshToken: "",

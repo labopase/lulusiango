@@ -33,7 +33,6 @@ flags.json
 # Editor/IDE
 .idea/
 .vscode/
-.agents/
 
 # OS
 .DS_Store
